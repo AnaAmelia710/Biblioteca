@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes e Edição do Livro</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <a href="/" class="btn btn-warning">Voltar para a Home</a>
+    
+    <h2>Detalhes do Livro: {{ livro.nome }}</h2>
+    <p>Nome: {{ livro.nome }}</p>
+    <p>Autor: {{ livro.autor }}</p>
+    <p>Editora: {{ livro.editora }}</p>
+    <p>Gênero: 
+        {% for genero in livro.genero.all %}
+            {{ genero.nome }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+    <p>Preço: R$ {{ livro.preco }}</p>
+    <p>Data de Publicação: {{ livro.data_pub }}</p>
+    <p>Status: {{ livro.status }}</p>
+
+    <h3 class="mt-4">Editar Livro</h3>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red;"><b>{{ message }}</b></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success btn-block btn-lg mt-2">Salvar Edições do Livro</button>
+    </form>
+    <br>
+</div>
+
+<!-- jQuery, Popper.js e Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

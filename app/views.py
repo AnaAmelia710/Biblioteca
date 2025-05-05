@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.views import View
 from django.contrib import messages
+from django.views import View
+from app.forms import LivroForm
+
 
 class IndexView(View):
     def get(self, request, *args, **kwargs):
@@ -50,4 +53,25 @@ class DeleteLivroView(View):
         livro.delete()
         messages.success(request, 'Livro excluído com sucesso!')
         return redirect('index')
+
+#pra editar
+class EditarLivroView(View):
+    template_name = 'editar_livro.html'
+
+    def get(self, request, id, *args, **kwargs):
+        livro = get_object_or_404(Livro, id=id)  # Obtém o livro com o ID fornecido
+        form = LivroForm(instance=livro)         # Preenche o formulário com os dados atuais do livro
+        return render(request, self.template_name, {'livro': livro, 'form': form})
+
+    def post(self, request, id, *args, **kwargs):
+        livro = get_object_or_404(Livro, id=id)  # Obtém o livro novamente
+        form = LivroForm(request.POST, instance=livro)  # Envia os dados do formulário com o livro atual
+
+        if form.is_valid():
+            form.save()  # Salva as alterações no banco
+            messages.success(request, 'As edições foram salvas com sucesso.')
+            return redirect('editar', id=id)  # Redireciona de volta à página de edição
+        else:
+            messages.error(request, 'Corrija os erros no formulário antes de enviar novamente.')
+            return render(request, self.template_name, {'livro': livro, 'form': form})
     
